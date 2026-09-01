@@ -1,21 +1,13 @@
-import type { App } from "../types/app";
+import type { App, ViewMode } from "../types/app";
 import { AppCard } from "./AppCard";
 
 interface AppGridProps {
   apps: App[];
-  favorites: string[];
-  onToggleFavorite: (id: string) => void;
-  onOpen: (id: string) => void;
+  view: ViewMode;
   onClearFilters: () => void;
 }
 
-export function AppGrid({
-  apps,
-  favorites,
-  onToggleFavorite,
-  onOpen,
-  onClearFilters,
-}: AppGridProps) {
+export function AppGrid({ apps, view, onClearFilters }: AppGridProps) {
   if (apps.length === 0) {
     return (
       <div className="empty-state" role="status">
@@ -38,15 +30,10 @@ export function AppGrid({
   }
 
   return (
-    <div className="app-grid" role="list">
+    <div className={`app-grid app-grid--${view}`} role="list">
       {apps.map((app) => (
         <div key={app.id} role="listitem">
-          <AppCard
-            app={app}
-            isFavorite={favorites.includes(app.id)}
-            onToggleFavorite={onToggleFavorite}
-            onOpen={onOpen}
-          />
+          <AppCard app={app} view={view} />
         </div>
       ))}
     </div>

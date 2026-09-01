@@ -1,69 +1,42 @@
-import type { App } from "../types/app";
+import type { App, ViewMode } from "../types/app";
 
 interface AppCardProps {
   app: App;
-  isFavorite: boolean;
-  onToggleFavorite: (id: string) => void;
-  onOpen: (id: string) => void;
+  view: ViewMode;
 }
 
-export function AppCard({
-  app,
-  isFavorite,
-  onToggleFavorite,
-  onOpen,
-}: AppCardProps) {
-  const handleFavoriteClick = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onToggleFavorite(app.id);
-  };
-
-  const handleOpen = () => {
-    onOpen(app.id);
-  };
+export function AppCard({ app, view }: AppCardProps) {
+  const isGrid = view === "grid";
 
   return (
     <a
       href={app.url}
       target="_blank"
       rel="noopener noreferrer"
-      className="app-card"
-      onClick={handleOpen}
+      className={`app-card app-card--${view}`}
       aria-label={`Open ${app.name}`}
     >
-      <div className="app-card-header">
-        <span className="app-icon" aria-hidden="true">
-          {app.icon}
-        </span>
-        <button
-          type="button"
-          className={`favorite-btn${isFavorite ? " favorite-btn--active" : ""}`}
-          onClick={handleFavoriteClick}
-          aria-label={
-            isFavorite
-              ? `Remove ${app.name} from favorites`
-              : `Add ${app.name} to favorites`
-          }
-          aria-pressed={isFavorite}
-        >
-          {isFavorite ? "★" : "☆"}
-        </button>
-      </div>
-      <h3 className="app-name">{app.name}</h3>
-      <p className="app-description">{app.description}</p>
-      <div className="app-meta">
-        <span className="category-badge">{app.category}</span>
-        <div className="app-tags">
-          {app.tags.map((tag) => (
-            <span key={tag} className="tag">
-              {tag}
-            </span>
-          ))}
+      <span className="app-icon" aria-hidden="true">
+        {app.icon}
+      </span>
+      <div className="app-card-body">
+        <div className="app-card-top">
+          <h3 className="app-name">{app.name}</h3>
+          {!isGrid && (
+            <span className="category-badge">{app.category}</span>
+          )}
         </div>
+        {!isGrid && (
+          <p className="app-description">{app.description}</p>
+        )}
+        {isGrid && (
+          <span className="category-badge category-badge--compact">
+            {app.category}
+          </span>
+        )}
       </div>
-      <span className="open-cta">
-        Open app <span aria-hidden="true">↗</span>
+      <span className="open-cta" aria-hidden="true">
+        ↗
       </span>
     </a>
   );

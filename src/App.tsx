@@ -1,11 +1,11 @@
 import { useMemo, useCallback, useEffect } from "react";
 import { apps } from "./data/apps";
-import type { Category, RecentApp } from "./types/app";
+import type { Category, ViewMode } from "./types/app";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import { Header } from "./components/Header";
 import { SearchBar } from "./components/SearchBar";
 import { CategoryFilters } from "./components/CategoryFilters";
-import { RecentApps } from "./components/RecentApps";
+import { ViewToggle } from "./components/ViewToggle";
 import { AppGrid } from "./components/AppGrid";
 
 function getPreferredTheme(): "light" | "dark" {
@@ -24,8 +24,7 @@ export default function App() {
   );
   const [search, setSearch] = useLocalStorage<string>("search", "");
   const [category, setCategory] = useLocalStorage<Category>("category", "All");
-  const [favorites, setFavorites] = useLocalStorage<string[]>("favorites", []);
-  const [recents, setRecents] = useLocalStorage<RecentApp[]>("recents", []);
+  const [view, setView] = useLocalStorage<ViewMode>("view", "grid");
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
@@ -35,29 +34,6 @@ export default function App() {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
   }, [setTheme]);
 
-  const toggleFavorite = useCallback(
-    (id: string) => {
-      setFavorites((prev) =>
-        prev.includes(id) ? prev.filter((f) => f !== id) : [...prev, id]
-      );
-    },
-    [setFavorites]
-  );
-
-  const handleOpen = useCallback(
-    (id: string) => {
-      setRecents((prev) => {
-        const filtered = prev.filter((r) => r.id !== id);
-        return [{ id, openedAt: Date.now() }, ...filtered].slice(0, 5);
-      });
-    },
-    [setRecents]
-  );
-
-  const clearRecents = useCallback(() => {
-    setRecents([]);
-  }, [setRecents]);
-
   const clearFilters = useCallback(() => {
     setSearch("");
     setCategory("All");
@@ -66,9 +42,7 @@ export default function App() {
   const filteredApps = useMemo(() => {
     let result = apps;
 
-    if (category === "Favorites") {
-      result = result.filter((a) => favorites.includes(a.id));
-    } else if (category !== "All") {
+    if (category !== "All") {
       result = result.filter((a) => a.category === category);
     }
 
@@ -84,14 +58,7 @@ export default function App() {
     }
 
     return result;
-  }, [category, search, favorites]);
-
-  const recentApps = useMemo(() => {
-    return recents
-      .map((r) => apps.find((a) => a.id === r.id))
-      .filter((a): a is NonNullable<typeof a> => a != null)
-      .slice(0, 5);
-  }, [recents]);
+  }, [category, search]);
 
   return (
     <div className="app">
@@ -103,28 +70,18 @@ export default function App() {
       <main className="main">
         <div className="controls">
           <SearchBar value={search} onChange={setSearch} />
-          <CategoryFilters
-            selected={category}
-            onSelect={setCategory}
-            favoriteCount={favorites.length}
-          />
+          <div className="controls-row">
+            <CategoryFilters selected={category} onSelect={setCategory} />
+            <ViewToggle view={view} onChange={setView} />
+          </div>
         </div>
-        <RecentApps
-          apps={recentApps}
-          favorites={favorites}
-          onToggleFavorite={toggleFavorite}
-          onOpen={handleOpen}
-          onClear={clearRecents}
-        />
         <section aria-labelledby="all-apps-heading">
           <h2 id="all-apps-heading" className="section-title visually-hidden">
             All apps
           </h2>
           <AppGrid
             apps={filteredApps}
-            favorites={favorites}
-            onToggleFavorite={toggleFavorite}
-            onOpen={handleOpen}
+            view={view}
             onClearFilters={clearFilters}
           />
         </section>
