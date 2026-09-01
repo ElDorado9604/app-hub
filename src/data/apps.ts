@@ -13,10 +13,10 @@ export const apps: App[] = [
   {
     id: "scratchpad",
     name: "Scratchpad",
-    description: "A simple personal notepad and scratchpad for quick notes.",
+    description: "Temporary collaborative notebook. Enter a passcode and type together with connected users in real time.",
     url: "https://scratchpad-eldorado4.vercel.app",
     category: "Productivity",
-    tags: ["Notes", "Writing", "Personal"],
+    tags: ["Notes", "Collaborative", "Realtime"],
     icon: "📝",
   },
   {
