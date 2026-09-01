@@ -8,6 +8,15 @@ import { CategoryFilters } from "./components/CategoryFilters";
 import { ViewToggle } from "./components/ViewToggle";
 import { AppGrid } from "./components/AppGrid";
 
+const VALID_CATEGORIES: Category[] = [
+  "All",
+  "QA",
+  "AI",
+  "PDF Tools",
+  "Productivity",
+  "Utilities",
+];
+
 function getPreferredTheme(): "light" | "dark" {
   if (typeof window === "undefined") return "dark";
   const stored = window.localStorage.getItem("theme");
@@ -17,18 +26,32 @@ function getPreferredTheme(): "light" | "dark" {
     : "light";
 }
 
+function sanitizeCategory(value: string): Category {
+  return VALID_CATEGORIES.includes(value as Category)
+    ? (value as Category)
+    : "All";
+}
+
 export default function App() {
   const [theme, setTheme] = useLocalStorage<"light" | "dark">(
     "theme",
     getPreferredTheme()
   );
   const [search, setSearch] = useLocalStorage<string>("search", "");
-  const [category, setCategory] = useLocalStorage<Category>("category", "All");
+  const [categoryRaw, setCategory] = useLocalStorage<string>("category", "All");
   const [view, setView] = useLocalStorage<ViewMode>("view", "grid");
+
+  const category = sanitizeCategory(categoryRaw);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
+
+  useEffect(() => {
+    if (categoryRaw !== category) {
+      setCategory(category);
+    }
+  }, [categoryRaw, category, setCategory]);
 
   const toggleTheme = useCallback(() => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
