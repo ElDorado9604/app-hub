@@ -29,12 +29,13 @@ export const apps: App[] = [
     icon: "📄",
   },
   {
-    id: "biodata-creator",
-    name: "BioData Creator",
-    description: "Create and manage biodata / resume style documents.",
-    url: "https://eldorado9604.github.io/BioDataCreator/",
+    id: "bio-data-maker",
+    name: "Bio Data Maker",
+    description:
+      "Marriage biodata creator for Marathi / Hindu families. Beautiful templates, photo, custom fields, private — all in the browser.",
+    url: "https://eldorado9604.github.io/bio-data-maker/",
     category: "Productivity",
-    tags: ["Documents", "Resume", "Personal"],
-    icon: "📋",
+    tags: ["Biodata", "Marriage", "Marathi", "Hindu", "PDF"],
+    icon: "💍",
   },
 ];
