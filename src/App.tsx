@@ -1,21 +1,11 @@
 import { useMemo, useCallback, useEffect } from "react";
 import { apps } from "./data/apps";
-import type { Category, ViewMode } from "./types/app";
+import type { ViewMode } from "./types/app";
 import { useLocalStorage } from "./hooks/useLocalStorage";
 import { Header } from "./components/Header";
 import { SearchBar } from "./components/SearchBar";
-import { CategoryFilters } from "./components/CategoryFilters";
 import { ViewToggle } from "./components/ViewToggle";
 import { AppGrid } from "./components/AppGrid";
-
-const VALID_CATEGORIES: Category[] = [
-  "All",
-  "QA",
-  "AI",
-  "PDF Tools",
-  "Productivity",
-  "Utilities",
-];
 
 function getPreferredTheme(): "light" | "dark" {
   if (typeof window === "undefined") return "dark";
@@ -26,32 +16,17 @@ function getPreferredTheme(): "light" | "dark" {
     : "light";
 }
 
-function sanitizeCategory(value: string): Category {
-  return VALID_CATEGORIES.includes(value as Category)
-    ? (value as Category)
-    : "All";
-}
-
 export default function App() {
   const [theme, setTheme] = useLocalStorage<"light" | "dark">(
     "theme",
     getPreferredTheme()
   );
   const [search, setSearch] = useLocalStorage<string>("search", "");
-  const [categoryRaw, setCategory] = useLocalStorage<string>("category", "All");
   const [view, setView] = useLocalStorage<ViewMode>("view", "grid");
-
-  const category = sanitizeCategory(categoryRaw);
 
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
   }, [theme]);
-
-  useEffect(() => {
-    if (categoryRaw !== category) {
-      setCategory(category);
-    }
-  }, [categoryRaw, category, setCategory]);
 
   const toggleTheme = useCallback(() => {
     setTheme((prev) => (prev === "dark" ? "light" : "dark"));
@@ -59,29 +34,20 @@ export default function App() {
 
   const clearFilters = useCallback(() => {
     setSearch("");
-    setCategory("All");
-  }, [setSearch, setCategory]);
+  }, [setSearch]);
 
   const filteredApps = useMemo(() => {
-    let result = apps;
+    if (!search.trim()) return apps;
 
-    if (category !== "All") {
-      result = result.filter((a) => a.category === category);
-    }
-
-    if (search.trim()) {
-      const q = search.trim().toLowerCase();
-      result = result.filter(
-        (a) =>
-          a.name.toLowerCase().includes(q) ||
-          a.description.toLowerCase().includes(q) ||
-          a.category.toLowerCase().includes(q) ||
-          a.tags.some((t) => t.toLowerCase().includes(q))
-      );
-    }
-
-    return result;
-  }, [category, search]);
+    const q = search.trim().toLowerCase();
+    return apps.filter(
+      (a) =>
+        a.name.toLowerCase().includes(q) ||
+        a.description.toLowerCase().includes(q) ||
+        a.category.toLowerCase().includes(q) ||
+        a.tags.some((t) => t.toLowerCase().includes(q))
+    );
+  }, [search]);
 
   return (
     <div className="app">
@@ -91,12 +57,9 @@ export default function App() {
         onToggleTheme={toggleTheme}
       />
       <main className="main">
-        <div className="controls">
+        <div className="controls controls--simple">
           <SearchBar value={search} onChange={setSearch} />
-          <div className="controls-row">
-            <CategoryFilters selected={category} onSelect={setCategory} />
-            <ViewToggle view={view} onChange={setView} />
-          </div>
+          <ViewToggle view={view} onChange={setView} />
         </div>
         <section aria-labelledby="all-apps-heading">
           <h2 id="all-apps-heading" className="section-title visually-hidden">
