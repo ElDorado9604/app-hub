@@ -57,4 +57,13 @@ export const apps: App[] = [
     tags: ["Resume", "QA", "SDET", "Automation"],
     icon: "💼",
   },
+  {
+    id: "ts-playground",
+    name: "TS Playground",
+    description: "In-browser lightweight TypeScript compiler.",
+    url: "https://eldorado9604.github.io/ts-playground/",
+    category: "Utilities",
+    tags: ["TypeScript", "Compiler", "Playground", "Code"],
+    icon: "⚡",
+  },
 ];
