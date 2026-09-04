@@ -38,4 +38,13 @@ export const apps: App[] = [
     tags: ["Biodata", "Marriage", "Marathi", "Hindu", "PDF"],
     icon: "💍",
   },
+  {
+    id: "zip-to-github-uploader",
+    name: "Zip to GitHub Uploader",
+    description: "Unzip a zip file and upload its contents to a GitHub repository.",
+    url: "https://zip-to-github-uploader-app.vercel.app",
+    category: "Utilities",
+    tags: ["GitHub", "Zip", "Upload", "Files"],
+    icon: "📦",
+  },
 ];
