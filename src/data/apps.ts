@@ -47,4 +47,14 @@ export const apps: App[] = [
     tags: ["GitHub", "Zip", "Upload", "Files"],
     icon: "📦",
   },
+  {
+    id: "qa-resume-builder",
+    name: "QA Resume Builder",
+    description:
+      "Resume builder for QA professionals for roles like automation engineer, SDET, and more.",
+    url: "https://qa-resume-builder-eldorado4.vercel.app",
+    category: "QA",
+    tags: ["Resume", "QA", "SDET", "Automation"],
+    icon: "💼",
+  },
 ];
