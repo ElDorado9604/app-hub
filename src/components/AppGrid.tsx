@@ -16,14 +16,14 @@ export function AppGrid({ apps, view, onClearFilters }: AppGridProps) {
         </p>
         <h2 className="empty-state-title">No apps found</h2>
         <p className="empty-state-text">
-          Try adjusting your search or category filters.
+          Try a different search term.
         </p>
         <button
           type="button"
           className="empty-state-btn"
           onClick={onClearFilters}
         >
-          Clear filters
+          Clear search
         </button>
       </div>
     );
