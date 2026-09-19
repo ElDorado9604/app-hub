@@ -66,4 +66,13 @@ export const apps: App[] = [
     tags: ["TypeScript", "Compiler", "Playground", "Code"],
     icon: "⚡",
   },
+  {
+    id: "md-to-epub",
+    name: "MD to EPUB Converter",
+    description: "Convert Markdown files to EPUB ebooks in the browser.",
+    url: "https://eldorado9604.github.io/md-to-epub/",
+    category: "Utilities",
+    tags: ["Markdown", "EPUB", "Ebook", "Convert"],
+    icon: "📚",
+  },
 ];
